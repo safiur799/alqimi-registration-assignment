@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { resolve } from 'path';
-import nodemailer from 'nodemailer';
-import Email from 'email-templates';
+import * as nodemailer from 'nodemailer';
 import { ConfigService } from '@nestjs/config';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
@@ -12,34 +10,29 @@ export class MailerService {
     ) { }
 
     async sendMail(from: string, to: string | string[], subject: string, tplName: string, locals: any): Promise<SMTPTransport.SentMessageInfo> {
-        const templateDir = resolve('./views/', 'email-templates', tplName, 'html');
-        const email = new Email({
-            views: {
-                root: templateDir,
-                options: {
-                    extension: 'ejs'
-                }
-            }
-        });
-
-        const getMailBody = await email.render(templateDir, locals);
+        
+        const user = this.configService.getOrThrow<string>('MAIL_USERNAME');
+        const pass = this.configService.getOrThrow<string>('MAIL_PASSWORD')
 
         const transporter = nodemailer.createTransport({
             service: 'gmail',
-            auth: {
-                user: this.configService.getOrThrow<string>('MAIL_USERNAME'),
-                pass: this.configService.getOrThrow<string>('MAIL_PASSWORD')
-            }
+            auth: { user, pass }
+        });
+
+        await transporter.verify().then(() => {
+            console.log('Gmail SMTP connection OK');
+        }).catch((err) => {
+            console.error('smtp error', err.message);
         });
 
         const mailOptions = {
             from,
             to,
             subject,
-            html: getMailBody
+            html: `<h1>Hello ${locals.name}!</h1><p>Welcome to Forge.</p>`
         };
 
-        return await transporter.sendMail(mailOptions);
+        const result = await transporter.sendMail(mailOptions);
+        return result;
     }
 }
- 

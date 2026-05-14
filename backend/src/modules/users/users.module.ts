@@ -4,8 +4,9 @@ import { UsersController } from './users.controller';
 import { UserRepositoryModule } from './repositories/users.repository.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './schemas/user.schema';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import { MailerService } from 'src/helper/mailer.helper';
 
 @Module({
   imports: [
@@ -21,8 +22,8 @@ import { JwtModule } from '@nestjs/jwt';
       }),
       inject: [ConfigService]
     }),
-    UserRepositoryModule],
+    UserRepositoryModule , ConfigModule],
   controllers: [UsersController],
-  providers: [UsersService],
+  providers: [UsersService , MailerService],
 })
 export class UsersModule { }
