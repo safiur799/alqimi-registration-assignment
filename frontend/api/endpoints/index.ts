@@ -1,4 +1,4 @@
-export const baseUrlApi = "http://localhost:5000";
+export const baseUrlApi = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export const apiEndpoints = {
   register: "/users/register",
