@@ -11,14 +11,14 @@ const RegistrationForm =()=>{
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                <FormInput label="Email Adress *" placeholder="Email" type="email"/>
+               <FormInput label="First Name *" placeholder="First Name" type="text"/>
                <FormInput label="Password *" placeholder="Password" type="password"/>
-                <FormInput label="Email Adress *" placeholder="Email" type="email"/>
-               <FormInput label="Password *" placeholder="Password" type="password"/>
-                <FormInput label="Email Adress *" placeholder="Email" type="email"/>
-               <FormInput label="Password *" placeholder="Password" type="password"/> <FormInput label="Email Adress *" placeholder="Email" type="email"/>
-               <FormInput label="Password *" placeholder="Password" type="tel"/>
+               <FormInput label="Last Name *" placeholder="Last Name" type="email"/>
+               <FormInput label="Confirm Password *" placeholder="Confirm Password" type="password"/>
+               <FormInput label="Organization *" placeholder="Organization" type="text"/> 
+               <FormInput label="Phone Number *" placeholder="Phone Number with country code" type="tel"/>
+               <FormInput label="Position" placeholder="Position" type="text"/>
             </div>
-
             <button type="submit" className="w-full mt-4 disabled:opacity-60 bg-orange-600 rounded-xl py-3 px-5 text-md font-semibold text-white">
                 Submit
             </button>
