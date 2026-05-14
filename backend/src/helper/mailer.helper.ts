@@ -5,34 +5,48 @@ import SMTPTransport from 'nodemailer/lib/smtp-transport';
 
 @Injectable()
 export class MailerService {
+
     constructor(
         private readonly configService: ConfigService
     ) { }
 
-    async sendMail(from: string, to: string | string[], subject: string, tplName: string, locals: any): Promise<SMTPTransport.SentMessageInfo> {
-        
-        const user = this.configService.getOrThrow<string>('MAIL_USERNAME');
-        const pass = this.configService.getOrThrow<string>('MAIL_PASSWORD')
+    async sendMail(
+        from: string,
+        to: string | string[],
+        subject: string,
+        tplName: string,
+        locals: any
+    ): Promise<SMTPTransport.SentMessageInfo> {
+
+        const user =
+            this.configService.getOrThrow<string>('MAIL_USERNAME');
+
+        const pass =
+            this.configService.getOrThrow<string>('MAIL_PASSWORD');
 
         const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: { user, pass }
-        });
-
-        await transporter.verify().then(() => {
-            console.log('Gmail SMTP connection OK');
-        }).catch((err) => {
-            console.error('smtp error', err.message);
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
+            auth: {
+                user,
+                pass,
+            },
+            tls: {
+                rejectUnauthorized: false,
+            },
         });
 
         const mailOptions = {
             from,
             to,
             subject,
-            html: `<h1>Hello ${locals.name}!</h1><p>Welcome to Forge.</p>`
+            html: `
+        <h1>Hello ${locals.name}!</h1>
+        <p>Welcome to Forge.</p>
+      `,
         };
 
-        const result = await transporter.sendMail(mailOptions);
-        return result;
+        return await transporter.sendMail(mailOptions);
     }
 }
