@@ -10,6 +10,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { registerSchema } from "@/schema/register.schema";
 import { RegistrationFormData } from "@/typescript/form.types";
 import { AuthHooks } from "@/api/hooks/register/registerhook";
+import { toast } from "react-toastify";
+import { Loader2 } from "lucide-react";
 
 
 
@@ -19,28 +21,29 @@ const RegistrationForm = () => {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<RegistrationFormData>({
     resolver: yupResolver(registerSchema),
     mode: "onChange",
   });
 
- 
-const { mutate, isPending } = AuthHooks.useRegister();
 
-const onSubmit = (data: RegistrationFormData) => {
-  mutate(data, {
-    onSuccess: (response) => {
-      console.log("Registration Success", response.data);
+  const { mutate, isPending } = AuthHooks.useRegister();
 
-      reset();
-    },
+  const onSubmit = (data: RegistrationFormData) => {
+    mutate(data, {
+      onSuccess: (response) => {
+        toast.success(response?.data?.message || "Registration successful");
+        reset();
+      },
 
-    onError: (error) => {
-      console.log("Registration Error", error.response?.data);
-    },
-  });
-};
+      onError: (error: any) => {
+        toast.error(
+          error?.response?.data?.message || "Registration failed"
+        );
+      },
+    });
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center w-full">
@@ -127,10 +130,11 @@ const onSubmit = (data: RegistrationFormData) => {
 
         <button
           type="submit"
-          disabled={isSubmitting}
-          className="w-full mt-4 disabled:opacity-60 bg-orange-600 rounded-xl py-3 px-5 text-md font-semibold text-white"
+          disabled={isPending}
+          className="w-full mt-4 disabled:opacity-60 bg-orange-600 rounded-xl py-3 px-5 text-md font-semibold text-white flex items-center justify-center gap-2 cursor-pointer"
         >
-          {isSubmitting ? "Submitting..." : "Submit"}
+          {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
+          {isPending ? "Submitting..." : "Submit"}
         </button>
       </form>
     </div>
