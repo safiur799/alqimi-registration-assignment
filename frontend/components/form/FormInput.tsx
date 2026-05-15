@@ -47,7 +47,7 @@ export const FormInput = ({
           type="button"
           onClick={() => setShow(!show)}
           className="
-            absolute right-4 top-[43px]
+            absolute right-4 top-1/2 
             text-gray-500 hover:text-black
             transition-colors duration-200
             cursor-pointer
